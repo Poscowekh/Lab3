@@ -1,3 +1,6 @@
+
+//ABSOLETE
+
 #ifndef TIMEUTILITIES_HPP
 #define TIMEUTILITIES_HPP
 #include "time.h"

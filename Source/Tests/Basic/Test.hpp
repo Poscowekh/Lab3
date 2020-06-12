@@ -37,8 +37,9 @@ class Test
             memcpy(functions + count, new_func, el_size);
             count++;
         };
-        void RunTests()
+        int RunTests()
         {
+            errors = 0;
             Check check;
             TestFunction<Check>* tmp;
             cout << "   Testing " << name << "..." << endl;
@@ -61,6 +62,7 @@ class Test
                 cout << "with " << errors << " errors." << endl;
             else
                 cout << " succesfully." << endl;
+            return errors;
         };
 };
 

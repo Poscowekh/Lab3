@@ -2,6 +2,7 @@
 #define PERSON_HPP
 #include <utility>
 #include <time.h>
+#include <string>
 
 using namespace std;
 
@@ -9,15 +10,14 @@ class Person
 {
     private:
         size_t id;
-        char* first_name;
-        char* middle_name;
-        char* last_name;
+        string first_name;
+        string middle_name;
+        string last_name;
         time_t birth_date;
     public:
         Person()
         {
             id = birth_date = 0;
-            first_name = middle_name = last_name = 0;
         };
         Person(const Person* other)
         {
@@ -27,7 +27,7 @@ class Person
             middle_name = other->middle_name;
             last_name = other->last_name;
         };
-        Person(size_t new_id, time_t bdate, char* f_name, char* m_name, char* l_name)
+        Person(size_t new_id, time_t bdate, string f_name, string m_name, string l_name)
         {
             id = new_id;
             birth_date = bdate;
@@ -43,15 +43,15 @@ class Person
         {
             return birth_date;
         };
-        char* FirstName()
+        string FirstName()
         {
             return first_name;
         };
-        char* MiddleName()
+        string MiddleName()
         {
             return middle_name;
         };
-        char* LastName()
+        string LastName()
         {
             return last_name;
         };

@@ -4,6 +4,7 @@
 #include "../DataTypes/Person.hpp"
 #include "../DataTypes/Complex.hpp"
 #include "../../Structures/Basic/DynamicArray.hpp"
+#include <utility>
 
 using namespace std;
 
@@ -28,37 +29,37 @@ float RandomFloat(int seed)
 char RandomChar(int seed)
 {
     srand(seed);
-    char result = (char)(rand() % (127 - 33) + 33);
+    char result = (char)(rand() % 94 + 33);
     return result;
 };
 
 char RandomLetter(int seed)
 {
     srand(seed);
-    char result = ('A' + rand() % 26);
+    char result = (char)('A' + rand() % 26);
     return result;
 };
 
-char* RandomString(int seed, int size)
+string RandomString(int seed, int size)
 {
-    char* result = (char*)malloc(sizeof(char) * size);
+    string result;
     for(int i = 0; i < size; i++)
     {
         char tmp = RandomChar(seed);
-        memcpy(result + i, &tmp, sizeof(char));
-        seed = seed + RandomInt(seed);
+        result.push_back(tmp);
+        seed += RandomInt(seed);
     };
     return result;
 };
 
-char* RandomLetterString(int seed, int size)
+string RandomLetterString(int seed, int size)
 {
-    char* result = (char*)malloc(sizeof(char) * size);
+    string result;
     for(int i = 0; i < size; i++)
     {
         char tmp = RandomLetter(seed);
-        memcpy(result + i, &tmp, sizeof(char));
-        seed = seed + RandomInt(seed);
+        result.push_back(tmp);
+        seed += RandomInt(seed);
     };
     return result;
 };
@@ -89,29 +90,56 @@ DynamicArray<float>* FloatArray(int seed, int size)
     return result;
 };
 
-DynamicArray<char*>* StringArray(int seed, int size, int string_size)
+DynamicArray<string>* StringArray(int seed, int size, int string_size)
 {
-    DynamicArray<char*>* result = new DynamicArray<char*>();
-    srand(seed);
+    DynamicArray<string>* result = new DynamicArray<string>();
     for(int i = 0; i < size; i++)
     {
         result->PushFront(RandomString(seed, string_size));
-        seed = seed + RandomInt(seed);
+        seed += RandomInt(seed);
+    };
+    return result;
+};
+
+DynamicArray<string>* StringArray(int seed, int size)
+{
+    DynamicArray<string>* result = new DynamicArray<string>();
+    srand(seed);
+    int random_size;
+    for(int i = 0; i < size; i++)
+    {
+        random_size = rand() % 3 + 3;
+        result->PushFront(RandomString(seed, random_size));
+        seed += RandomInt(seed);
         srand(seed);
     };
     return result;
 };
 
-DynamicArray<char*>* StringArray(int seed, int size)
+DynamicArray<string>* LetterStringArray(int seed, int size)
 {
-    DynamicArray<char*>* result = new DynamicArray<char*>();
+    DynamicArray<string>* result = new DynamicArray<string>();
     srand(seed);
-    int random_size = rand() % 3 + 3;
+    int random_size;
     for(int i = 0; i < size; i++)
     {
-        result->PushFront(RandomString(seed, random_size));
-        seed = seed + RandomInt(seed);
+        random_size = rand() % 10 + 3;
+        string tmp = RandomLetterString(seed, random_size);
+        result->PushBack(&tmp);
+        seed += RandomInt(seed);
         srand(seed);
+    };
+    return result;
+};
+
+DynamicArray<string>* LetterStringArray(int seed, int size, int string_size)
+{
+    DynamicArray<string>* result = new DynamicArray<string>();
+    for(int i = 0; i < size; i++)
+    {
+        string tmp = RandomLetterString(seed, string_size);
+        result->PushBack(&tmp);
+        seed = seed + RandomInt(seed);
     };
     return result;
 };
@@ -152,6 +180,47 @@ DynamicArray< Complex<float, float> >* FloatComplexArray(int seed, int size)
     return result;
 };
 
+DynamicArray<int>* Indexes(int size)
+{
+    DynamicArray<int>* result = new DynamicArray<int>();
+    for(int i = 0; i < size; i++)
+        result->PushBack(i);
+    return result;
+};
+
+template<typename DataType>
+void Shuffle(DynamicArray<DataType>* array)
+{
+    int seed = time(NULL);
+    srand(seed);
+    int size = array->GetLength();
+    int times = 5 * (rand() % size + 1);
+    for(int i = 0; i < times; i++)
+    {
+        seed++;
+        srand(seed);
+        int index1 = rand() % size;
+        seed++;
+        srand(seed);
+        int index2 = rand() % size;
+        DataType tmp = array->Get(index1);
+        array->Set(index1, array->Get(index2));
+        array->Set(index2, tmp);
+    };
+};
+
+
+DynamicArray< pair<int, int> >* IntPairArray(int seed, int size)
+{
+    DynamicArray< pair<int, int> >* result = new DynamicArray< pair<int, int> >();
+    DynamicArray<int>* values = IntArray(seed, size);
+    DynamicArray<int>* indexes = Indexes(size);
+    Shuffle(indexes);
+    for(int i = 0; i < size; i++)
+        result->PushBack(make_pair(indexes->Get(i), values->Get(i)));
+    return result;
+};
+
 DynamicArray<Person>* PersonArray(int seed, int size)
 {
     DynamicArray<Person>* result = new DynamicArray<Person>();
@@ -159,11 +228,11 @@ DynamicArray<Person>* PersonArray(int seed, int size)
     int id_count = 0;
     for(int i = 0; i < size; i++)
     {
-        char* f_name = RandomString(seed, 3);
+        string f_name = RandomString(seed, 3);
         seed++;
-        char* m_name = RandomString(seed, 3);
+        string m_name = RandomString(seed, 3);
         seed++;
-        char* l_name = RandomString(seed, 3);
+        string l_name = RandomString(seed, 3);
         seed++;
         time_t b_day = time(NULL) + RandomInt(seed);
         seed++;

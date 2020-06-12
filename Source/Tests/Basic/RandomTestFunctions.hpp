@@ -73,6 +73,7 @@ NumType RandReduce(NumType x1, NumType x2)
     };
 };
 
-//RandReduce(); //etc
+//NumType RandMap(NumType x);
+//NumType RandWhere(NumType x1); //etc
 
 #endif // RANDOMTESTFUNCTIONS_HPP

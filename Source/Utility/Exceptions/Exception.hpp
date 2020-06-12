@@ -2,7 +2,7 @@
 #define EXCEPTION_HPP
 #include <iostream>
 
-using namespace std;
+using namespace std;        //ABSOLETE
 
 class Exception
 {
