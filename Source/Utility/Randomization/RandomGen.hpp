@@ -188,6 +188,32 @@ DynamicArray<int>* Indexes(int size)
     return result;
 };
 
+DynamicArray<int>* RandomIndexes(int limit, int count)
+{
+    int seed = time(NULL);
+    DynamicArray<int>* result = new DynamicArray<int>();
+    DynamicArray<int>* used = new DynamicArray<int>();
+    for(int i = 0; i < count; i++)
+    {
+        bool flag = true;
+        srand(seed);
+        int index = rand() % limit;
+        seed++;
+        while(flag)
+        {
+            flag = false;
+            for(int i = 0; i < used->GetLength(); i++)
+                if(used->Get(i) == index)
+                    flag = true;
+            srand(seed);
+            index = rand() % limit;
+            seed++;
+        };
+        result->PushBack(index);
+    };
+    return result;
+};
+
 template<typename DataType>
 void Shuffle(DynamicArray<DataType>* array)
 {

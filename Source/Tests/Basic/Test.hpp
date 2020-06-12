@@ -59,7 +59,7 @@ class Test
             };
             cout << "   Test finished";
             if(errors > 0)
-                cout << "with " << errors << " errors." << endl;
+                cout << " with " << errors << " errors." << endl;
             else
                 cout << " succesfully." << endl;
             return errors;

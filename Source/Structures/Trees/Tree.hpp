@@ -40,6 +40,20 @@ class BSTree
                 else
                     right = 0;
             };
+            Node(const Node& other)
+            {
+                key = other.key;
+                data = other.data;
+                height = other.height;
+                if(other.left != 0)
+                    left = new Node(other.left);
+                else
+                    left = 0;
+                if(other.right != 0)
+                    right = new Node(other.right);
+                else
+                    right = 0;
+            };
             template<typename KeyT, typename DataT>
             Node(KeyT&& n_key, DataT&& n_data)
             {
@@ -128,13 +142,13 @@ class BSTree
                     if(right == 0)
                         return left;
                     Node* min = FindMinNode(right);
-                    min->right = RemoveMinNode(right);
+                    min->right = RemoveNodeMin(right);
                     min->left = left;
                     return BalanceNode(min);
                 }
-                return Balance(parent);
+                return BalanceNode(parent);
         };
-        Node* RemoveNodeMin(Node *parent)
+        Node* RemoveNodeMin(Node* parent)
         {
             if(parent->left == 0)
                 return parent->right;
@@ -265,6 +279,14 @@ class BSTree
                 root = new Node(other.root);
             size = other.size;
         };
+        BSTree(const Tree* other)
+        {
+            if(other->root == 0)
+                root = 0;
+            else
+                root = new Node(other->root);
+            size = other->size;
+        };
         BSTree(Tree&& other)
         {
             if(other.root == 0)
@@ -367,6 +389,7 @@ class BSTree
         {
             delete root;
             root = 0;
+            size = 0;
         };
         template<typename KeyT>
         void Erase(KeyT&& key)
@@ -379,7 +402,7 @@ class BSTree
         template<typename KeyT>
         Tree Subtree(KeyT&& key) const
         {
-            const Node* parent = FindNode(root, forward<KeyT>(key));
+            Node* parent = FindNode(root, forward<KeyT>(key));
             Tree result;
             result.root = new Node(parent);
             result.size = result.GetNodeSize(result.root);
@@ -402,28 +425,28 @@ class BSTree
             Node* result = FindMinNode(root);
             return make_pair(result->key, result->data);
         };
-        pair<const KeyType&, DataType&> FindMax() const
+        pair<KeyType&, DataType&> FindMax() const
         {
             CheckSize();
             Node* result = FindMaxNode(root);
-            return make_pair(result->key, result->data);
+            return {result->key, result->data};
         };
 
         template<typename Function>
-        Tree Map(const Tree& tree, Function function)
+        Tree Map(Function function)
         {
-            Tree result = tree;
-            result.Traverse("lRr", [function](const KeyType &key, DataType &data)
+            Tree result = this;
+            result.Traverse("lRr", [&](const KeyType& key, DataType& data)
             {
                 data = function(data);
             });
             return result;
         };
         template<typename Function>
-        Tree Where(const Tree& tree, Function function)
+        Tree Where(Function function)
         {
-            Tree result = tree;
-            result.Traverse("lRr", [result, function](const KeyType &key, const DataType &data)
+            Tree result;
+            Traverse("lRr", [&](const KeyType &key, const DataType &data)
             {
                 if(function(data))
                     result.insert(key, data);
@@ -431,10 +454,10 @@ class BSTree
             return result;
         };
         template<typename Function>
-        DataType Reduce(const Tree& tree, DataType&& init_const, Function function)
+        DataType Reduce(DataType&& init_const, Function function)
         {
             DataType result = init_const;
-            tree.Traverse("lRr", [function, result](const KeyType &key, const DataType &data)
+            Traverse("lRr", [&](const KeyType &key, const DataType &data)
             {
                 result += function(data, result);
             });

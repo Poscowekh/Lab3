@@ -39,7 +39,9 @@ void Tests()
     cout << endl << "RUNNING TESTS" << endl;
     TestEngine* tests = CreateTests();
     tests->RunTests();
-    getchar();
+
+    delete tests;
+    cout << endl << endl;
 };
 
 #endif // TESTMAIN_HPP

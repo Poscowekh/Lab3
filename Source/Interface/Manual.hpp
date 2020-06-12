@@ -1,9 +1,13 @@
 #ifndef MANUAL_HPP
 #define MANUAL_HPP
-#include "../Examples/Example.hpp"
+#include "Example.hpp"
 
-/*using namespace std;
+BSTree<int, int> tree = BSTree<int, int>();
+DynamicArray< pair<int, int> >* pairs;
 
+using namespace std;
+
+/*
 int Question1()
 {
     int q1;
@@ -52,98 +56,6 @@ int Question3()
     };
 };
 
-Deque<int>* IntDeque(int size, int q1)
-{
-    Deque<int>* result;
-    DynamicArray<int>* arr = new DynamicArray<int>();
-    if(q1 == 0)
-    {
-        int seed;
-        cout << "seed:  ";
-        cin >> seed;
-        cout << endl;
-        arr = IntArray(seed, size);
-        result = new Deque<int>(arr);
-        result->PrintDeque();
-    }
-    else
-    {
-        for(int i = 0; i < size; i++)
-        {
-            int x;
-            cout << i << ": ";
-            cin >>  x;
-            cout << endl;
-            arr->PushBack(x);
-        };
-        result = new Deque<int>(arr);
-    };
-    cout << endl;
-    return result;
-};
-
-Deque<string>* StringDeque(int size, int q1)
-{
-    Deque<string>* result;
-    DynamicArray<string>* arr = new DynamicArray<string>();
-    if(q1 == 0)
-    {
-        int seed;
-        cout << "seed:  ";
-        cin >> seed;
-        cout << endl;
-        arr = StringArray(seed, size);
-        result = new Deque<string>(arr);
-        result->PrintDeque();
-    }
-    else
-    {
-        for(int i = 0; i < size; i++)
-        {
-            string x;
-            cout << i << ": ";
-            cin >>  x;
-            cout << endl;
-            arr->PushBack(x);
-        };
-        result = new Deque<string>(arr);
-    };
-    cout << endl;
-    return result;
-};
-
-Deque< Complex<int,int> >* ComplexDeque(int size, int q1)
-{
-    Deque< Complex<int,int> >* result;
-    DynamicArray< Complex<int,int> >* arr = new DynamicArray< Complex<int,int> >();
-    if(q1 == 0)
-    {
-        int seed;
-        cout << "seed:  ";
-        cin >> seed;
-        cout << endl;
-        arr = IntComplexArray(seed, size);
-        result = new Deque< Complex<int,int> >(arr);
-    }
-    else
-    {
-        for(int i = 0; i < size; i++)
-        {
-            int x1, x2;
-            cout << i << ": (";
-            cin >>  x1;
-            cout << ") +i (";
-            cin >> x2;
-            cout << ")" << endl;
-            Complex<int,int> x(x1, x2);
-            arr->PushBack(x);
-        };
-        result = new Deque< Complex<int,int> >(arr);
-    };
-    cout << endl;
-    return result;
-};
-
 int Actions()
 {
     int action = -1;
@@ -165,85 +77,80 @@ int Actions()
     }
     else
         return action;
+};*/
+
+
+void FillTree()
+{
+    for(int i = 0; i < pairs->GetLength(); i++)
+        tree.Insert(pairs->Get(i).first, pairs->Get(i).second);
 };
 
-int ElementSize(int q3)
+void PrintArray()
 {
-    int x = 0;
-    switch(q3)
+    cout << "Keys - Values" << endl;
+    for(int i = 0; i < pairs->GetLength(); i++)
+        cout << pairs->Get(i).first << " - " << pairs->Get(i).second << endl;
+};
+
+void PrintTree()
+{
+    string trav_t;
+    cout << "Enter traverse type, like: lRr:  ";
+    cin >> trav_t;
+    cout << endl << "Tree, traversed " << trav_t << ':' << endl;
+    tree.Traverse(trav_t, [](const int& a, int b){cout << a << ":  " << b << endl;});
+};
+
+void FillArray()
+{
+    int key, value;
+    cout << "Keys - Values" << endl;
+    for(int i = 0; i < pairs->GetLength(); i++)
     {
-        case 0:
-            x = sizeof(int);
-            break;
-        case 1:
-            x = sizeof(string);
-            break;
-        case 2:
-            x = sizeof(Complex<int, int>);
-            break;
+        cin >> key;
+        cout << " - ";
+        cin >> value;
+        cout << endl;
+        pairs->PushBack(make_pair(key, value));
     };
-    return x;
 };
 
-int GetElement(int q3, int el_size, void* buffer)
+void Start()
 {
-    int size = 0;
-    cout << "Enter element:  ";
-    if(q3 == 2)
+    int seed, size, tmp;
+    cout << "Create random?" << endl << "0 = yes, 1 = no:  ";
+    cin >> tmp;
+    cout << endl;
+    if(tmp == 0)
     {
-        int x1, x2;
-        cout << "(";
-        cin >> x1;
-        cout << ") +i (";
-        cin >> x2;
-        cout << ")" << endl;
-        buffer = malloc(el_size);
-        memcpy(buffer, &x1, sizeof(int));
-        memcpy(buffer, &x2, sizeof(int));
+        cout << "Enter size:  ";
+        cin >> size;
+        cout << endl << "Enter seed:   ";
+        cin >> seed;
+        cout << endl;
+        pairs = IntPairArray(seed, size);
+        PrintArray();
     }
     else
     {
-        if(q3 == 0)
+        if(tmp == 1)
         {
-            int x;
-            cin >> x;
+            cout << "Enter size:  ";
+            cin >> size;
             cout << endl;
-            buffer = malloc(el_size);
-            memcpy(buffer, &x, el_size);
+            FillArray();
         }
         else
+
         {
-            string x;
-            cin >> x;
-            cout << endl;
-            size = x.size();
-            memcpy(buffer, &x, el_size);
+            cout << "Wrong input" << endl;
+            Start();
         };
     };
-    return size;
 };
 
-int IntFromBuffer(void* buffer)
-{
-    int* x;
-    memcpy((void*)x, buffer, sizeof(int));
-    return *x;
-};
-
-string StringFromBuffer(void* buffer, int size)
-{
-    string x;
-    for(int i = 0; i < size; i++)
-        x.push_back(*((char*)buffer + i));
-    return x;
-};
-
-Complex<int, int> ComplexFromBuffer(void* buffer)
-{
-    Complex<int, int> result(*((int*)buffer), *((int*)buffer + sizeof(int)));
-    return result;
-};
-
+/*
 template<class Container>
 void Choises(Container* deque, int q3)
 {
@@ -331,37 +238,18 @@ void Choises(Container* deque, int q3)
         if(action != 0)
             Choises(deque, q3);
     };
-};
+};*/
 
 void Manual()
 {
-    Deque<int>* int_deque;
-    Deque<string>* str_deque;
-    Deque< Complex<int, int> >* comp_deque;
-    int q1 = -1;
-    int q2 = -1;
-    int q3 = -1;
-    q1 = Question1();
-    q2 = Question2();
-    q3 = Question3();
-    /*if(q3 == 0)
-    {
-        int_deque = IntDeque(q2, q1);
-        Choises(int_deque, q3);
-    }
-    else
-    {
-        if(q3 == 1)
-        {
-            str_deque = StringDeque(q2, q1);
-            Choises(str_deque, q3);
-        }
-        else
-        {
-            comp_deque = ComplexDeque(q2, q1);
-            Choises(comp_deque, q3);
-        };
-    };
-};*/
+    cout << "Manually Controlled Input:" << endl;
+    Start();
+    FillTree();
+    PrintTree();
+    tree.Clear();
+    pairs->Clear();
+
+    cout << endl << endl;
+};
 
 #endif // MANUAL_HPP
