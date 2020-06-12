@@ -307,6 +307,13 @@ class BSTree
         {
             return (FindNode(root, forward<KeyT>(key)) != 0);
         };
+        bool Empty()
+        {
+            if(size < 1)
+                return true;
+            else
+                return false;
+        };
         template<typename KeyT, typename DataT>
         void Insert(KeyT&& key, DataT&& data)
         {

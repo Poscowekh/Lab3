@@ -1,6 +1,7 @@
 #include "../Structures/Trees/Tree.hpp"
 #include "../Utility/DataTypes/FunctionArray.hpp"
 #include "../Utility/Randomization/RandomGen.hpp"
+#include "../Utility/FLags.hpp"
 #include <iostream>
 
 #include "../Tests/Main/TestMain.hpp"

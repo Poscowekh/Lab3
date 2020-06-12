@@ -1,13 +1,13 @@
 #ifndef TESTSBINARYTREE_HPP
 #define TESTSBINARYTREE_HPP
 #include "../Basic/Test.hpp"
-#include "../../Structures/Trees/BinaryTree.hpp"
+#include "../../Structures/Trees/Tree.hpp"
 #include "../../Utility/Randomization/RandomGen.hpp"
 
 using namespace std;
 
 using Array = DynamicArray<int>;
-using Tree = BinaryTree<int, int>;
+using Tree = BSTree<int, int>;
 
 Check TestBTreeCreate()
 {

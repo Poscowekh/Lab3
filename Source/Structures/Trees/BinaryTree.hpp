@@ -3,7 +3,7 @@
 #include "../Basic/Node2.hpp"
 #include "../Basic/DynamicArray.hpp"
 
-using namespace std;
+using namespace std;            //ABSOLETE
 
 template<typename DataType, typename KeyType>
 class BinaryTree
