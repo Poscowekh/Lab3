@@ -127,7 +127,7 @@ class BSTree
         Node* RemoveNode(Node* parent, KeyT&& key)
         {
             if(parent == 0)
-                throw std::out_of_range("Tree out of range!");
+                throw out_of_range("Tree out of range!");
                 if(key < parent->key)
                     parent->left = RemoveNode(parent->left, forward<KeyT>(key));
                 else if(key > parent->key)
@@ -218,7 +218,7 @@ class BSTree
             if(node != 0)
             {
                 if(node == parent)
-                    function(node->data, node->key);
+                    function(node->key, node->data);
                 else
                 {
                     Node* left = node->left;
@@ -257,7 +257,7 @@ class BSTree
         string ToStringTraverse(string trav_t)
         {
             string str;
-            TraversePrivate(root, 0, trav_t, [&](int &data, const int &key)
+            TraversePrivate(root, 0, trav_t, [&](const int &key, int& data)
             {
                 string tmp = to_string(data) + ' ';
                 str += tmp;
@@ -419,11 +419,11 @@ class BSTree
             return ToStringTraverse(trav_t);
         };
 
-        pair<const KeyType&, DataType&> FindMin() const
+        pair<KeyType&, DataType&> FindMin() const
         {
             CheckSize();
             Node* result = FindMinNode(root);
-            return make_pair(result->key, result->data);
+            return {result->key, result->data};
         };
         pair<KeyType&, DataType&> FindMax() const
         {
@@ -449,7 +449,7 @@ class BSTree
             Traverse("lRr", [&](const KeyType &key, const DataType &data)
             {
                 if(function(data))
-                    result.insert(key, data);
+                    result.Insert(key, data);
             });
             return result;
         };
@@ -459,7 +459,7 @@ class BSTree
             DataType result = init_const;
             Traverse("lRr", [&](const KeyType &key, const DataType &data)
             {
-                result += function(data, result);
+                result = function(result, data);
             });
             return result;
         };

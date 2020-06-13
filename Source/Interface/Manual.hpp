@@ -4,81 +4,35 @@
 
 BSTree<int, int> tree = BSTree<int, int>();
 DynamicArray< pair<int, int> >* pairs;
+bool flag = true;
 
 using namespace std;
 
-/*
-int Question1()
+void End()
 {
-    int q1;
-    cout << "Create random? 0 = yes, 1 = no   ";
-    cin >> q1;
-    cout << endl;
-    if(q1 == 0 || q1 == 1)
-        return q1;
-    else
-    {
-        cout << "Wrong input" << endl;
-        return Question1();
-    };
+    tree.Clear();
+    pairs->Clear();
+    flag = false;
+    cout << endl << endl;
 };
 
-int Question2()
+void SumReduce()
 {
-    int q2;
-    cout << "Choose size(up to 30):   ";
-    cin >> q2;
-    cout << endl;
-    if(q2 > 0 && q2 < 31)
-        return q2;
-    else
-    {
-        cout << "Wrong input" << endl;
-        return Question2();
-    };
+    int reduce = 0;
+    reduce = tree.Reduce(0, [](int x1, int x2){return x1 + x2;});
+    cout << endl << "Reduce=sum: " << reduce << endl << endl;
 };
 
-int Question3()
+void InsertNew()
 {
-    int q3;
-    cout << "Choose data type:";
-    cout << "   Enter '0' for integers:" << endl;
-    cout << "   Enter '1' for strings:" << endl;
-    cout << "   Enter '2' for complex:" << endl;
-    cin >> q3;
+    int key, value;
+    cout << endl << "Inserting..." << endl << " Key:  ";
+    cin >> key;
+    cout << " Value:  ";
+    cin >> value;
+    tree.Insert(key, value);
     cout << endl;
-    if(q3 > -1 && q3 < 3)
-        return q3;
-    else
-    {
-        cout << "Wrong input" << endl;
-        return Question3();
-    };
 };
-
-int Actions()
-{
-    int action = -1;
-    cout << "Choose option:" << endl;
-    cout << "   Enter '0' to exit:" << endl;
-    cout << "   Enter '1' to PopBack:" << endl;
-    cout << "   Enter '2' to PopFront:" << endl;
-    cout << "   Enter '3' to PushBack:" << endl;
-    cout << "   Enter '4' to PushFront:" << endl;
-    cout << "   Enter '5' to SubDeck:" << endl;
-    cout << "   Enter '6' to InsertAt:" << endl;
-    cout << "   Enter '7' to RemoveAt:" << endl;
-    cout << "   Enter '8' to PrintDeque:" << endl;
-    cin >> action;
-    if(action < 0 && action > 9)
-    {
-        cout << "Wrong input" << endl;
-        return Actions();
-    }
-    else
-        return action;
-};*/
-
 
 void FillTree()
 {
@@ -96,28 +50,34 @@ void PrintArray()
 void PrintTree()
 {
     string trav_t;
-    cout << "Enter traverse type, like: lRr:  ";
+    cout << endl << "Enter traverse type, like: lRr:  ";
     cin >> trav_t;
     cout << endl << "Tree, traversed " << trav_t << ':' << endl;
-    tree.Traverse(trav_t, [](const int& a, int b){cout << a << ":  " << b << endl;});
+    tree.Traverse(trav_t, [](const int& a, int b){cout << b << ' ';});
+    cout << endl << endl;
 };
 
-void FillArray()
+void FillArray(int size)
 {
     int key, value;
     cout << "Keys - Values" << endl;
-    for(int i = 0; i < pairs->GetLength(); i++)
+    for(int i = 0; i < size; i++)
     {
+        cout << i << " Key:  ";
         cin >> key;
-        cout << " - ";
+        if(i < 10)
+            cout << "  Value:  ";
+        else
+            cout << "   Value:  ";
         cin >> value;
-        cout << endl;
         pairs->PushBack(make_pair(key, value));
     };
+    cout << endl;
 };
 
 void Start()
 {
+    pairs = new DynamicArray< pair<int, int> >();
     int seed, size, tmp;
     cout << "Create random?" << endl << "0 = yes, 1 = no:  ";
     cin >> tmp;
@@ -139,117 +99,93 @@ void Start()
             cout << "Enter size:  ";
             cin >> size;
             cout << endl;
-            FillArray();
+            FillArray(size);
         }
         else
 
         {
-            cout << "Wrong input" << endl;
+            cout << "Wrong input" << endl << endl;
             Start();
         };
     };
+    flag = false;
+    FillTree();
+    PrintTree();
 };
 
-/*
-template<class Container>
-void Choises(Container* deque, int q3)
+void CreateNew()
 {
-    void* x;
-    int el_size = ElementSize(q3);
-    int size;
-    int index;
-    int action = Actions();
+    End();
+    Start();
+};
+
+void Subtree()
+{
+    int key = 0;
+    string trav_t;
+    cout << endl << "Choose key for root: ";
+    cin >> key;
+    cout << "Traverse type: ";
+    cin >> trav_t;
+    BSTree<int, int> subtree = tree.Subtree(key);
+    cout << "Subtree size and height: " << subtree.Size() << ' ' << subtree.Height() << endl << "Subtree traverse to string:" << endl;
+    cout << "  LeftRootRight:  " << subtree.ToString(trav_t) << endl << endl;
+};
+
+void Actions(int action)
+{
     switch(action)
     {
-        case 0:
-            cout << "Exiting..." << endl;
-            break;
-        case 1:
-            deque->PopBack();
-            break;
-        case 2:
-            deque->PopFront();
-            break;
-        case 3:
-            size = GetElement(q3, el_size, x);
-            if(q3 == 0)
-                deque->PushBack(IntFromBuffer(x));
-            else
-            {
-                if(q3 == 1)
-                    deque->PushBack(StringFromBuffer(x, size));
-                else
-                    deque->PushBack(ComplexFromBuffer(x));
-            };
-            break;
-        case 4:
-            size = GetElement(q3, el_size, x);
-            if(q3 == 0)
-                deque->PushFront(IntFromBuffer(x));
-            else
-            {
-                if(q3 == 1)
-                    deque->PushFront(StringFromBuffer(x, size));
-                else
-                    deque->PushFront(ComplexFromBuffer(x));
-            };
-            break;
-        case 5:
-            int from, to;
-            cout << "from:  ";
-            cin >> from;
-            cout << " -> ";
-            cin >> to;
-            cout << endl;
-            Container* subdeque = deque->SubDeck(from, to);
-            if(q3 == 2)
-                subdeque->PrintDequeForComplex();
-            else
-                subdeque->PrintDeque();
-            break;
-        case 6:
-            size = GetElement(q3, el_size, x);
-            cout << "at index:  ";
-            cin >> index;
-            cout << endl;
-            if(q3 == 0)
-                deque->InsertAt(index, IntFromBuffer(x));
-            else
-            {
-                if(q3 == 1)
-                    deque->InsertAt(index, StringFromBuffer(x, size));
-                else
-                    deque->InsertAt(index, ComplexFromBuffer(x));
-            };
-            break;
-        case 7:
-            cout << "at index:  ";
-            cin >> index;
-            cout << endl;
-            deque->RemoveAt(index);
-            break;
-        case 8:
-            cout << "Deque:" << endl;
-            if(q3 == 2)
-                deque->PrintDequeForComplex();
-            else
-                deque->PrintDeque();
-            break;
-        if(action != 0)
-            Choises(deque, q3);
+    case 1:
+        InsertNew();
+        break;
+    case 2:
+        SumReduce();
+        break;
+    case 3:
+        Subtree();
+        break;
+    case 4:
+        CreateNew();
+        break;
+    case 5:
+        PrintTree();
+        break;
     };
-};*/
+};
+
+void ActionChoise()
+{
+    if(flag)
+        Start();
+    int action = -1;
+    cout << "Choose option:" << endl;
+    cout << "   Enter '0' to exit:" << endl;
+    cout << "   Enter '1' to Insert:" << endl;
+    cout << "   Enter '2' to Sum-Reduce:" << endl;
+    cout << "   Enter '3' to Subtree:" << endl;
+    cout << "   Enter '4' to CreateNew:" << endl;
+    cout << "   Enter '5' to PrintTraverse:" << endl;
+    cout << "Chosen: ";
+    cin >> action;
+    if(action < 0 && action > 5)
+    {
+        cout << "Wrong input" << endl;
+        return ActionChoise();
+    }
+    else
+        if(action == 0)
+            End();
+        else
+            Actions(action);
+    ActionChoise();
+};
 
 void Manual()
 {
-    cout << "Manually Controlled Input:" << endl;
-    Start();
-    FillTree();
-    PrintTree();
-    tree.Clear();
-    pairs->Clear();
-
-    cout << endl << endl;
+    cout << "Manually Controlled Input:" << endl << endl;
+    ActionChoise();
+    cout << "Exited." << endl;
 };
 
 #endif // MANUAL_HPP

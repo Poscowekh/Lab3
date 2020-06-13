@@ -49,10 +49,16 @@ void Example()
     cout << "  LeftRootRight:  " << subtree.ToString("lRr") << endl;
     int reduce = tree.Reduce(0, [](int x1, int x2){return x1 + x2;});
     cout << endl << "Reduce=sum: " << reduce << endl;
-    subtree = tree.Map([](int x){return x % 100;});
+    //subtree = tree.Map([](int x){return x % 100;});
     //cout << endl << "Map=(x % 100): " << endl;
     //cout << "  LeftRootRight:  " << subtree.ToString("lRr") << endl;
-
+    cout << endl << "Priority Queue:" << endl;
+    PriorityQueue<int, int> queue;
+    queue.SetType("MAX");
+    for(size_t i = 0; i < arr->GetLength(); i++)
+        queue.Push(arr->Get(i).first, arr->Get(i).second);
+    while(!queue.Empty())
+        cout << queue.Pop() << ' ';
 
     cout << endl << endl;
 };
